@@ -42,6 +42,7 @@ namespace dsp {
         void setOffset(const float o);
         void setJitter(const float s);
         float play();
+        void play(float * outL, float * outR);
         void setNumSamples(const uint32_t s);
         uint32_t getNumSamples(void) { return m_numSamples; }
 
@@ -49,8 +50,9 @@ namespace dsp {
         float *m_buffer;
         float m_spray;
         uint32_t m_numSamples;
-        const uint8_t m_num_grains = 15; 
-        Grain m_grains[15];
+        const uint8_t m_num_grains = 12;
+        Grain m_grainsLeft[12];
+        Grain m_grainsRight[12];
     };
 
 }; /* namespace dsp */
