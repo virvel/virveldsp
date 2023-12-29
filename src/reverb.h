@@ -44,14 +44,30 @@ class reverb {
             decay_diffusion21.init(0.625f, 0.625f);
             decay_diffusion22.init(0.625f, 0.625f);
 
-            bandwidth.init(48000, 0.5);
+            delay1.init(4453);
+            delay2.init(4217);
+            delay3.init(3720);
+            delay4.init(3163);
+            predelay.init(1000);
+
+            bandwidth.init(48000, 0.9995);
             damping1.init(48000, 0.5);
             damping2.init(48000, 0.5);
 
             m_prevLeft = 0.f;
             m_prevRight = 0.f;
+            m_decay = 0.95;
 
 
+        }
+        
+        void process2(float inLeft, float inRight, float * outLeft, float * outRight) {
+            delay1.write(inLeft);
+            delay2.write(inRight);
+            *outLeft = delay1.read();
+            *outRight = delay2.read();
+//            *outLeft = input_diffusion11.process(inLeft);
+//           *outRight= input_diffusion12.process(inRight);
         }
 
         void process(float inLeft, float inRight, float * outLeft, float * outRight) {
@@ -67,32 +83,43 @@ class reverb {
             in = input_diffusion21.process(in);
             in = input_diffusion22.process(in);
 
-            float left = decay_diffusion11.process(in + m_prevRight);
-            yr = 0.6 * decay_diffusion11.tap(353);
+            float left = decay_diffusion11.process(in + m_decay*m_prevRight);
             delay1.write(left);
-            yr -= 0.6 * delay1.tap(3627);
             left = delay1.read();
-            left = damping1.process(left);
+            yr += 0.6 * delay1.tap(353);
+            yr -= 0.6 * delay1.tap(3627);
+            yl -= 0.6 * delay1.tap(1990);
+            left = m_decay*damping1.process(left);
             left = decay_diffusion21.process(left);
+            yr += decay_diffusion21.tap(1228);
+            yl -= decay_diffusion21.tap(187);
             delay3.write(left);
             left = delay3.read();
+            yr -= delay3.tap(2673);
+            yl -= delay3.tap(1066);
 
-            float right = decay_diffusion12.process(in + m_prevLeft);
-            yl = 0.6*decay_diffusion12.tap(266);
+            float right = decay_diffusion12.process(in + m_decay*m_prevLeft);
             delay2.write(right);
-            yl -= 0.6 * delay2.tap(2974);
             right = delay2.read();
-            right = damping2.process(right);
+            yl += 0.6*delay2.tap(266);
+            yl -= 0.6 * delay2.tap(2974);
+            yr -= 0.6 * delay2.tap(2111);
+            right = m_decay*damping2.process(right);
             right = decay_diffusion22.process(right);
+            yl += 0.6 * decay_diffusion22.tap(1913);
+            yr -= 0.6 * decay_diffusion22.tap(335);
             delay4.write(right);
             right = delay4.read();
+            yl -= 0.6 * delay4.tap(1996);
+            yr -= 0.6 * delay4.tap(121);
 
 
             m_prevLeft = left;
             m_prevRight = right;
 
-            *outLeft = left;
-            *outRight = right;
+            *outLeft = yl;
+            *outRight = yr;
+
         }
 
 };

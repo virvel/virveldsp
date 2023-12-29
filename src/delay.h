@@ -13,16 +13,23 @@ namespace dsp {
 
         public: 
             void init(uint16_t initSize) {
-                m_maxSize = static_cast<float>(initSize);
+                m_delayTime = static_cast<float>(initSize);
             }
 
             inline void write(float in) {
-                m_buffer[m_writePtr] = in;
                 if (m_writePtr > m_delayTime)
                     m_writePtr -= m_delayTime;
+
+                m_buffer[m_writePtr] = in;
+
+                m_writePtr++;
+
             }
 
             inline float read() {
+                if (m_readPtr > m_delayTime)
+                    m_readPtr -= m_delayTime;
+
                 uint16_t int_samples = static_cast<uint16_t>(m_readPtr);
                 float frac = m_readPtr - int_samples;
                 float a = m_buffer[int_samples];
@@ -30,8 +37,7 @@ namespace dsp {
 
                 float out = b + frac*(a-b);
 
-                if (m_readPtr > m_delayTime)
-                    m_readPtr -= m_delayTime;
+                m_readPtr++;
 
                 return out;
             }
@@ -41,7 +47,7 @@ namespace dsp {
                 m_delayTime = samples;
             }
             
-            const inline float tap(float in) {
+            inline float tap(float in) {
                 auto readptr = m_readPtr;
                 if (readptr > in)
                     readptr -= in;
