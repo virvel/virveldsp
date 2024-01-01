@@ -50,7 +50,7 @@ class reverb {
             delay4.init(3163);
             predelay.init(1000);
 
-            bandwidth.init(48000, 0.9995);
+            bandwidth.init(48000, 0.5);
             damping1.init(48000, 0.5);
             damping2.init(48000, 0.5);
 
@@ -61,14 +61,6 @@ class reverb {
 
         }
         
-        void process2(float inLeft, float inRight, float * outLeft, float * outRight) {
-            delay1.write(inLeft);
-            delay2.write(inRight);
-            *outLeft = delay1.read();
-            *outRight = delay2.read();
-//            *outLeft = input_diffusion11.process(inLeft);
-//           *outRight= input_diffusion12.process(inRight);
-        }
 
         void process(float inLeft, float inRight, float * outLeft, float * outRight) {
             float in = 0.5 * (inLeft + inRight);

@@ -27,8 +27,6 @@ namespace dsp {
             }
 
             inline float read() {
-                if (m_readPtr > m_delayTime)
-                    m_readPtr -= m_delayTime;
 
                 uint16_t int_samples = static_cast<uint16_t>(m_readPtr);
                 float frac = m_readPtr - int_samples;
@@ -37,7 +35,7 @@ namespace dsp {
 
                 float out = b + frac*(a-b);
 
-                m_readPtr++;
+                m_readPtr = (m_readPtr + 1) % static_cast<uint16_t>(m_delayTime);
 
                 return out;
             }
@@ -47,10 +45,10 @@ namespace dsp {
                 m_delayTime = samples;
             }
             
-            inline float tap(float in) {
+            inline float tap(uint16_t in) {
                 auto readptr = m_readPtr;
                 if (readptr > in)
-                    readptr -= in;
+                    readptr = readptr % in;
                 return m_buffer[readptr];
             }
 
