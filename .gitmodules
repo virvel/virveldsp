@@ -1,0 +1,3 @@
+[submodule "virveldsp"]
+	path = virveldsp
+	url = https://github.com/virvel/virveldsp
