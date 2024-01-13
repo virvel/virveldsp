@@ -2,7 +2,7 @@
 TARGET = MPR121
 
 # Sources
-CPP_SOURCES = MPR121.cpp
+CPP_SOURCES = MPR121.cpp tusenskona/src/tusenskona.cpp
 
 # Library Locations
 LIBDAISY_DIR = ./libDaisy/

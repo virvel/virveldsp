@@ -1,4 +1,4 @@
-#include "daisy_seed.h"
+#include "tusenskona/src/tusenskona.h"
 #include "daisysp.h"
 #include "dev/mpr121.h"
 #include "chebyshev.h"
@@ -11,28 +11,30 @@ using namespace daisysp;
 
 Mpr121I2CTransport i2c;
 Mpr121I2C touch;
-DaisySeed hw;
+Tusenskona hw;
 
 uint16_t touched;
 
 dsp::comb<300> aps[4];
-dsp::delay<3000> ds[4];
+dsp::delay<3800> ds[4];
 dsp::lowpass lps[4];
 
+Oscillator sine;
+Oscillator lfo;
 
-float decay =0.5;
+float decay = 0.5;
 
-float a,b,c,d;
+float a=0,b=0,c=0,d=0;
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
 	{
-		out[0][i] = 0.f;
-		out[1][i] = 0.f;
-
-        float s = (in[0][i]+in[1][i])*0.5;
-
+		out[0][i] = 0;
+		out[1][i] = 0; 
+        
+        float s = sine.Process();
+        
         a = lps[0].process(s + a);
         b = lps[1].process(s + c);
         c = lps[2].process(b);
@@ -52,59 +54,99 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
         ds[3].write(d);
         d = ds[3].read();
 
+        a = tanhf(a);
+        b = tanhf(b);
+        c = tanhf(c);
+        d = tanhf(d);
+
         float aa = (a-b);
         float bb = (a+b);
         float cc = (c-d);
         float dd = (c+d);
-        a =tanhf(decay*(aa-cc));
-        b =tanhf(decay*(aa+cc));
-        c =tanhf(decay*(bb-dd));
-        d =tanhf(decay*(bb+dd));
+        a =decay*(aa-cc);
+        b =decay*(aa+cc);
+        c =decay*(bb-dd);
+        d =decay*(bb+dd);
 
         out[0][i] = a;
-        out[1][i] = b;
-        
-        /*
-        if (touched > 0 ) {
-            for (int j = 0; j < 12;j++) {
-                out[0][i] += ((touched >> j) & 1) *  sines[j].Process();
-                out[1][i] = out[0][i];
-            }
-        }*/
-	}
+        out[1][i] = b; 
+    }
+}
+
+void UpdateControls() {
+       hw.ProcessAllControls();
+       float ctrl0 = hw.GetKnobValue((daisy::Tusenskona::Knob)0);
+       float ctrl1 = hw.GetKnobValue((daisy::Tusenskona::Knob)1);
+       float ctrl2 = hw.GetKnobValue((daisy::Tusenskona::Knob)2);
+       float ctrl3 = hw.GetKnobValue((daisy::Tusenskona::Knob)3);
+
+       float cc = ctrl0 + 0.1;
+
+       aps[0].setDelayTime(19 * cc);
+       aps[1].setDelayTime(11 * cc);
+       aps[2].setDelayTime(33 * cc);
+       aps[3].setDelayTime(41 * cc);
+       
+       ds[0].setDelayTime(10 + 1323 * cc);
+       ds[1].setDelayTime(10 + 1779 * cc);
+       ds[2].setDelayTime(10 + 3397 * cc);
+       ds[3].setDelayTime(10 + 2391 * cc);
+
+       decay = ctrl1;
+
+       lps[0].setSmoothingFactor(ctrl2);
+       lps[1].setSmoothingFactor(ctrl2);
+       lps[2].setSmoothingFactor(ctrl2);
+       lps[3].setSmoothingFactor(ctrl2);
+
+
+       sine.SetFreq(ctrl3 * 1000);
+
 }
 
 int main(void)
 {
 
 	hw.Init();
-	hw.SetAudioBlockSize(16); 
+
     auto i2cconfig = Mpr121I2CTransport::Config();
     i2c.Init(i2cconfig);
 
     auto mprconfig = Mpr121I2C::Config();
     touch.Init(mprconfig);
 
+
     for (int i = 0;i<4;++i) {
         aps[i].init(0.5,0.5);
         ds[i].init(300*(i+1));
         lps[i].init(48000, 0.5);
-
     }
 
-    /*
-    for (int i = 0; i < 12; i++)
-    {
-        sines[i].Init(48000);
-        sines[i].SetFreq(110*(i+1));
-        sines[i].SetAmp(0.085);
-    }
-    */
+    aps[0].setDelayTime(19);
+    aps[1].setDelayTime(11);
+    aps[2].setDelayTime(33);
+    aps[3].setDelayTime(41);
 
+    ds[0].setDelayTime(1323);
+    ds[1].setDelayTime(1779);
+    ds[2].setDelayTime(3397);
+    ds[3].setDelayTime(2391);
+
+    sine.Init(48000);
+    sine.SetWaveform(5);
+    sine.SetFreq(110);
+
+    lfo.Init(48000);
+    lfo.SetFreq(0.05);
+
+
+	hw.SetAudioBlockSize(16); 
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
-	hw.StartAudio(AudioCallback);
+    hw.StartAdc();
+	hw.StartAudio(NewAudioCallback);
 
 	while(1) {
         touched = touch.Touched();
+        UpdateControls();
     }
 }
