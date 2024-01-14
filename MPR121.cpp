@@ -5,6 +5,7 @@
 #include "comb.h"
 #include "delay.h"
 #include "lowpass.h"
+//#include "dcblock.h"
 
 using namespace daisy;
 using namespace daisysp;
@@ -22,9 +23,13 @@ dsp::lowpass lps[4];
 Oscillator sine;
 Oscillator lfo;
 
+DcBlock dcb;
+
 float decay = 0.5;
 
 float a=0,b=0,c=0,d=0;
+
+float ctrls[4] = {0,0,0,0};
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size)
 {
@@ -44,6 +49,12 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
         b = aps[1].process(b);
         c = aps[2].process(c);
         d = aps[3].process(d);
+
+        auto mod = (1.f + lfo.Process())/2;
+        for (int j = 0; j < 4;++j)
+        {
+            ds[j].mod(mod*16);
+        }
 
         ds[0].write(a);
         a = ds[0].read();
@@ -68,6 +79,11 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
         c =decay*(bb-dd);
         d =decay*(bb+dd);
 
+        a = dcb.Process(a);
+        b = dcb.Process(b);
+        c = dcb.Process(c);
+        d = dcb.Process(d);
+
         out[0][i] = a;
         out[1][i] = b; 
     }
@@ -80,34 +96,64 @@ void UpdateControls() {
        float ctrl2 = hw.GetKnobValue((daisy::Tusenskona::Knob)2);
        float ctrl3 = hw.GetKnobValue((daisy::Tusenskona::Knob)3);
 
-       float cc = ctrl0 + 0.1;
+       
+       if (abs(ctrls[0] - ctrl0) > 0.001) {
+           if (ctrl0 < 0.0001)
+                           ctrl0 = 0.f;
+                   ctrls[0] = ctrl0 + 0.1;
+       }
+       if (abs(ctrls[1] - ctrl1) > 0.001) {
+               if (ctrl1 < 0.0001)
+                               ctrl1 = 0.f;
+                       ctrls[1] = ctrl1;
+       }
+           
+       if (abs(ctrls[2] - ctrl2) > 0.001) {
+                   if (ctrl2 < 0.0001)
+                                   ctrl2 = 0.f;
+                           ctrls[2] = ctrl2;
+       }
 
+       if (abs(ctrls[3] - ctrl3) > 0.001) {
+           if (ctrl3 < 0.0001)
+                ctrl3 = 0.f;
+            ctrls[3] = ctrl3;
+       }
+        /*
        aps[0].setDelayTime(19 * cc);
        aps[1].setDelayTime(11 * cc);
        aps[2].setDelayTime(33 * cc);
        aps[3].setDelayTime(41 * cc);
+       */
        
-       ds[0].setDelayTime(10 + 1323 * cc);
-       ds[1].setDelayTime(10 + 1779 * cc);
-       ds[2].setDelayTime(10 + 3397 * cc);
-       ds[3].setDelayTime(10 + 2391 * cc);
+       ds[0].setDelayTime(10 + 1323 * ctrls[0]);
+       ds[1].setDelayTime(10 + 1779 * ctrls[0]);
+       ds[2].setDelayTime(10 + 3397 * ctrls[0]);
+       ds[3].setDelayTime(10 + 2391 * ctrls[0]);
 
-       decay = ctrl1;
+       decay = ctrls[1];
 
-       lps[0].setSmoothingFactor(ctrl2);
-       lps[1].setSmoothingFactor(ctrl2);
-       lps[2].setSmoothingFactor(ctrl2);
-       lps[3].setSmoothingFactor(ctrl2);
+       lps[0].setSmoothingFactor(ctrls[2]);
+       lps[1].setSmoothingFactor(ctrls[2]);
+       lps[2].setSmoothingFactor(ctrls[2]);
+       lps[3].setSmoothingFactor(ctrls[2]);
 
 
-       sine.SetFreq(ctrl3 * 1000);
+       sine.SetFreq(ctrls[3] * 1000);
 
 }
 
 int main(void)
 {
 
+    auto fpscr = __get_FPSCR();
+        fpscr |= 0x0100000;
+            __set_FPSCR(fpscr);
+
 	hw.Init();
+
+
+    dcb.Init(48000);
 
     auto i2cconfig = Mpr121I2CTransport::Config();
     i2c.Init(i2cconfig);
@@ -137,13 +183,13 @@ int main(void)
     sine.SetFreq(110);
 
     lfo.Init(48000);
-    lfo.SetFreq(0.05);
+    lfo.SetFreq(0.0005);
 
 
 	hw.SetAudioBlockSize(16); 
 	hw.SetAudioSampleRate(SaiHandle::Config::SampleRate::SAI_48KHZ);
     hw.StartAdc();
-	hw.StartAudio(NewAudioCallback);
+	hw.StartAudio(AudioCallback);
 
 	while(1) {
         touched = touch.Touched();
