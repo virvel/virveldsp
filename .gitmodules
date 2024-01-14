@@ -1,9 +1,0 @@
-[submodule "virveldsp"]
-	path = virveldsp
-	url = https://github.com/virvel/virveldsp
-[submodule "libDaisy"]
-	path = libDaisy
-	url = https://github.com/electro-smith/libDaisy
-[submodule "tusenskona"]
-	path = tusenskona
-	url = https://github.com/virvel/tusenskona
