@@ -13,6 +13,7 @@ namespace dsp {
             void init(const uint16_t samplerate, const float fac ) {
                 m_sr = samplerate;
                 m_fac = fac;
+                m_prev = 0.f;
             }
 
             void setFrequency(const float frequency) {
@@ -23,7 +24,7 @@ namespace dsp {
                 m_fac = fac;
             }
             
-            inline float process(const float in) {
+            inline float process(float in) {
                 m_prev = m_prev + m_fac * (in - m_prev);
                 return m_prev; 
     }
