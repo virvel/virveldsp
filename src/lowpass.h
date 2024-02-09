@@ -7,6 +7,7 @@ namespace dsp {
         private:
             uint16_t m_sr;
             float m_fac;
+            float m_newfac;
             float m_prev;
             
         public:
@@ -21,10 +22,16 @@ namespace dsp {
             }
 
             void setSmoothingFactor(const float fac) {
-                m_fac = fac;
+                m_newfac = fac;
+            }
+
+            void update() {
+
+                m_fac = 0.5*m_fac + 0.5*m_newfac;
             }
             
             inline float process(float in) {
+                update();
                 m_prev = m_prev + m_fac * (in - m_prev);
                 return m_prev; 
     }

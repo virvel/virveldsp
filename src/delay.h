@@ -37,7 +37,7 @@ class delay {
 
         inline void update() {
 
-            m_delayTime = 0.9995 * m_delayTime + 0.0005*(m_newDelayTime+ m_mod);
+            m_delayTime = 0.95 * m_delayTime + 0.05*(m_newDelayTime + m_mod);
         }
 
         inline float read() {
