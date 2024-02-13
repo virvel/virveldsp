@@ -39,13 +39,13 @@ inline void allpass<S>::mod(float mod) {
 
 template <UInt S>
 inline void allpass<S>::setDelayTime(const float delayTime) {
-    m_newDelayTime = delayTime;
+    m_delayTime = delayTime;
 }
 
 
 template <UInt S>
 inline void allpass<S>::update() {
-    m_delayTime = 0.995*m_delayTime + 0.005*(m_newDelayTime + m_mod); 
+    m_delayTime = 0.95*m_delayTime + 0.05*(m_newDelayTime); 
 }
 
 
@@ -57,7 +57,7 @@ inline float allpass<S>::process(const float in) {
     if (m_pos >= m_delayTime)
         m_pos -= m_delayTime;
 
-    update();
+    //update();
 
     uint16_t pos = static_cast<uint16_t>(m_pos);
     float frac = m_pos-pos;
