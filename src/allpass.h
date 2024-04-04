@@ -28,6 +28,8 @@ class allpass {
 template <UInt S>
 void allpass<S>::init() { 
     m_pos = 0;
+    m_xprev = 0;
+    m_yprev = 0;
     m_delayTime = static_cast<float>(m_size);
 }
 
@@ -36,6 +38,7 @@ template <UInt S>
 inline void allpass<S>::mod(float mod) {
     m_mod = mod;
 }
+
 
 template <UInt S>
 inline void allpass<S>::setDelayTime(const float delayTime) {
@@ -61,11 +64,8 @@ inline float allpass<S>::process(const float in) {
 
     uint16_t pos = static_cast<uint16_t>(m_pos);
     float frac = m_pos-pos;
-
     float aa = (1-frac)/(1+frac);
-
     float xn = m_buf[pos%m_size];
-
     float out = aa * (xn - m_yprev) + m_xprev;
 
     m_xprev = xn;
