@@ -5,7 +5,7 @@
 #include <array>
 #include <algorithm>
 
-namespace daisysp {
+namespace dsp {
             
     template <int num_harmonics>
     class Chebyshev {
