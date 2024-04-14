@@ -17,7 +17,7 @@ class delay2 {
     public: 
         void init(const float initSize) {
             assert(initSize < S);
-            for (int i = 0; i < m_maxSize; ++i)
+            for (uint32_t i = 0; i < m_maxSize; ++i)
                 m_buffer[i] = 0;
             m_writePtr = 0;
             m_readPtr = static_cast<float>(m_maxSize -1);
