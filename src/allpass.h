@@ -15,7 +15,6 @@ class allpass {
         }
 
         inline float process(const float delayTime) {
-            m_pos += 1;
 
             float floatpos = m_pos + delayTime;
 
@@ -29,13 +28,7 @@ class allpass {
 
             return out;
         }
-
-        inline float tap(float tap) {
-            auto pos = m_pos;
-            if (pos > tap)
-                pos -= tap;
-            return m_buf[pos];
-        }
+        
     private:
         uint16_t m_size = S;
         float m_buf[S];
