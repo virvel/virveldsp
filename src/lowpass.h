@@ -32,7 +32,7 @@ namespace dsp {
             
             inline float process(float in) {
                 update();
-                m_prev = m_prev + m_fac * (in - m_prev);
+                m_prev = in - m_fac * m_prev;
                 return m_prev; 
     }
 

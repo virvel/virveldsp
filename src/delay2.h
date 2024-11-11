@@ -39,8 +39,7 @@ class delay2 {
             const uint32_t int_pos = static_cast<uint32_t>(floorf(m_readPtr));
             const float frac = m_readPtr - static_cast<float>(int_pos);
 
-           auto n = int_pos;
-
+            auto n = int_pos;
 
             m_readPtr += 1.f;
 
