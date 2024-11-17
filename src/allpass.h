@@ -1,7 +1,4 @@
-#include "daisy.h"
-
 namespace dsp {
-
 using UInt = uint16_t;
 
 template <UInt S> class allpass {
