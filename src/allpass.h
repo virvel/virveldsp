@@ -1,3 +1,5 @@
+#include <cstdint>
+
 namespace dsp {
 using UInt = uint16_t;
 
