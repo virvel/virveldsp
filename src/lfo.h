@@ -26,7 +26,7 @@ public:
   }
 
   inline void process() {
-    m_x = m_y - m_e * m_x;
+    m_x = m_x - m_e * m_y;
     m_y = m_e * m_x + m_y;
   }
 
