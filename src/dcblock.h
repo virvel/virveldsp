@@ -15,4 +15,4 @@ struct dcblock {
   float yn1 = 0.f;
 };
 
-}
+} // namespace dsp
