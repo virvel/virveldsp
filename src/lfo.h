@@ -1,11 +1,12 @@
-const float twopi = 6.2831853072f;
+#pragma once
+constexpr float twopi = 6.2831853072f;
 
 namespace dsp {
 
 class lfo {
 
 public:
-  lfo() {}
+  lfo() = default;
 
   void init(const float sampleRate) {
     m_sampleRate = sampleRate;

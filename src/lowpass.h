@@ -1,5 +1,4 @@
-#include "daisy.h"
-
+#include <cstdint>
 namespace dsp {
 
     // One pole low pass filter

@@ -7,12 +7,12 @@ class delay {
     private:
         float m_buffer[S];
         const uint32_t m_maxSize = S;
-        float m_readPtr;
-        uint16_t m_writePtr;
-        float m_delayTime;
-        float m_newDelayTime;
-        float m_prev;
-        float m_mod;
+        float m_readPtr = 0.f;
+        uint16_t m_writePtr = 0;
+        float m_delayTime = S;
+        float m_newDelayTime = S;
+        float m_prev = 0.f;
+        float m_mod = 0.f;
 
     public: 
         void init(const float initSize) {

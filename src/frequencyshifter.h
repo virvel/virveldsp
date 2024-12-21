@@ -12,7 +12,7 @@ namespace daisysp {
 		{
 		public:
 			FrequencyShifter() {}
-            void init(int16_t sampleRate);
+            void init(int32_t sampleRate);
 			void frequency(float freq);
 			//void amplitude(float n);
 			/* Uses internal oscillators */
@@ -26,7 +26,7 @@ namespace daisysp {
 			float phase_accumulator;
 			float phase_increment;
 			float magnitude;
-            int16_t m_sampleRate;
+            int32_t m_sampleRate;
             float delayed_i = 0;
 
 			arm_biquad_casd_df1_inst_f32 i_ap;
