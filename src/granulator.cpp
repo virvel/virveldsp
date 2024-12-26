@@ -12,7 +12,7 @@ void dsp::Grain::init(float * const  buffer, const uint32_t size) {
 }
 
 float dsp::Grain::play() {
-    
+
     if (m_position >= m_duration) {
         m_active = false;
         m_delay = static_cast<uint32_t>(static_cast<float>(m_duration/2) * static_cast<float>(rand() / static_cast<float>(RAND_MAX)));
@@ -58,7 +58,7 @@ float dsp::Grain::play() {
         if (m_delay > 0) {
             m_delay--;
             return 0.f;
-        } 
+        }
         m_position = 0.f;
         m_offset = m_next_offset + static_cast<uint32_t>(static_cast<float>(m_jitter) * static_cast<float>(rand() / static_cast<float>(RAND_MAX)));
         m_active = true;
@@ -76,16 +76,16 @@ void dsp::Granulator::init(float * const buffer, const uint32_t numSamples) {
     m_numSamples = numSamples/2;
     m_buffer = buffer;
 
-    for (auto &g : m_grainsLeft) 
+    for (auto &g : m_grainsLeft)
         g.init(buffer, numSamples/2);
-    for (auto &g : m_grainsRight) 
+    for (auto &g : m_grainsRight)
         g.init(&buffer[numSamples/2], numSamples/2);
 }
 
 void dsp::Granulator::setOffset(const float offset) {
-    for (auto &g : m_grainsLeft) 
+    for (auto &g : m_grainsLeft)
         g.setOffset(offset);
-    for (auto &g : m_grainsRight) 
+    for (auto &g : m_grainsRight)
         g.setOffset(offset);
 }
 
@@ -98,9 +98,9 @@ void dsp::Granulator::setNumSamples(const uint32_t size) {
 }
 
 void dsp::Granulator::setDuration(const float s) {
-    for (auto &g : m_grainsLeft) 
+    for (auto &g : m_grainsLeft)
         g.setDuration(s);
-    for (auto &g : m_grainsRight) 
+    for (auto &g : m_grainsRight)
         g.setDuration(s);
 }
 
