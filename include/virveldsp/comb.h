@@ -1,4 +1,5 @@
-
+#pragma once
+#include <cstdint>
 namespace dsp {
 
 using UInt = uint16_t;
@@ -14,7 +15,7 @@ public:
 
 private:
   uint16_t m_size = S;
-  float m_buf[S] {};
+  float m_buf[S]{};
   uint16_t m_pos;
   float m_delayTime;
   float m_prev;

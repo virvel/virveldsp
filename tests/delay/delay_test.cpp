@@ -9,9 +9,9 @@ TEST(DelayTest, BasicAssertions) {
     x[1] = -0.5f;
     std::vector<float> y(20, 0.f);
 
-    dsp::delay_test<10> dd;
+    dsp::delay<10> dd;
 
-    for (int i = 0; i < x.size(); i++) {
+    for (size_t i = 0; i < x.size(); i++) {
         dd.write(x[i]);
         y[i] = dd.read(5);
     }
