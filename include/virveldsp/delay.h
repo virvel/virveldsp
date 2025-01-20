@@ -2,7 +2,7 @@
 #include <cstdint>
 
 namespace dsp {
-template <int32_t S> class delay_test {
+template <int32_t S> class delay {
 public:
   void write(const float in) {
 
