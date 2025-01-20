@@ -36,23 +36,16 @@ template <UInt S> inline void comb<S>::setDelayTime(const float delayTime) {
 }
 
 template <UInt S> inline float comb<S>::process(const float in) {
+  float buf_out = m_buf[m_pos % m_size];
+
+  float y = in - m_fb * buf_out;
+  m_buf[m_pos] = y;
+  const float out = m_ff * y + buf_out;
 
   m_pos += 1;
 
   if (m_pos >= m_delayTime)
     m_pos -= m_delayTime;
-
-  auto pos = static_cast<uint16_t>(m_pos);
-  const float frac = m_pos - pos;
-
-  float c = m_buf[pos % m_size];
-
-  float buf_out = c;
-  float y = in - buf_out * m_fb;
-  m_buf[pos] = y;
-  const float out = m_ff * y + buf_out;
-
-  m_prev = out;
 
   return out;
 }

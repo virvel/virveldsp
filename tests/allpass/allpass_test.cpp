@@ -9,7 +9,7 @@ TEST(AllpassTest, BasicAssertions) {
     std::vector<float> y(30, 0.f);
 
     dsp::allpass<20> ap;
-    ap.setDelayTime(3.f);
+    ap.setDelayTime(3);
 
     for (int i = 0; i < x.size(); i++) {
         y[i] = ap.process(x[i]);

@@ -12,6 +12,8 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
+add_compile_options(-Wall -Wextra -Wshadow)
+
 add_library(virveldsp INTERFACE include/virveldsp/granulator.cpp include/virveldsp/frequencyshifter.cpp)
 target_include_directories(virveldsp INTERFACE include)
 

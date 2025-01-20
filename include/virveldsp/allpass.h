@@ -15,13 +15,12 @@ public:
     const float frac = m_delayTime - static_cast<float>(int_del);
     int t = m_pos + static_cast<uint16_t>(int_del) + m_size;
 
-    //            const float aa = (1 - frac) / (1 + frac);
+    const float aa = (1 - frac) / (1 + frac + 0.001);
     const float ynl = m_buf[t % m_size];
-    const float out = 0.8 * (in - ynl) + m_xprev;
-    m_xprev = ynl;
-    m_yprev = out;
+    const float vm = in - ynl * aa;
+    const float out = aa * vm + ynl;
 
-    m_buf[m_pos] = in;
+    m_buf[m_pos] = vm;
 
     m_pos = (m_pos - 1 + m_size) % m_size;
 
@@ -30,7 +29,7 @@ public:
 
 private:
   uint16_t m_size = S;
-  float m_buf[S] {};
+  float m_buf[S]{};
   uint16_t m_pos = 0;
   float m_delayTime = S;
   float m_yprev = 0.f;
