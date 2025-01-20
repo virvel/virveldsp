@@ -1,4 +1,5 @@
 #pragma once
+#include <cmath>
 constexpr float twopi = 6.2831853072f;
 
 namespace dsp {
@@ -16,9 +17,9 @@ public:
 
   void reset() {
     m_omega = twopi * (m_freq / m_sampleRate);
-    m_e = 2.f * sin(m_omega / 2.f);
-    m_x = cos(m_omega);
-    m_y = sin(m_omega);
+    m_e = 2.f * std::sin(m_omega / 2.f);
+    m_x = std::cos(m_omega);
+    m_y = std::sin(m_omega);
   }
 
   void setFreq(const float freq) {

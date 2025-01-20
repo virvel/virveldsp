@@ -1,5 +1,8 @@
-#include "daisy.h"
+#pragma once
 
+#include <cstdint>
+#include <cassert>
+#include <cmath>
 namespace dsp {
     
 template <uint16_t S>

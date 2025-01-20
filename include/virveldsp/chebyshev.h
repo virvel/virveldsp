@@ -1,6 +1,4 @@
 #pragma once
-#include "daisy.h"
-#include "daisysp.h"
 
 #include <array>
 #include <algorithm>
