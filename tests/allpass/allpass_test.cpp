@@ -11,11 +11,11 @@ TEST(AllpassTest, BasicAssertions) {
     dsp::allpass<20> ap;
     ap.setDelayTime(3);
 
-    for (int i = 0; i < x.size(); i++) {
+    for (size_t i = 0; i < x.size(); i++) {
         y[i] = ap.process(x[i]);
     }
 
-    for (int i = 0; i < y.size(); i++) {
+    for (size_t i = 0; i < y.size(); i++) {
       std::cout << y[i] << std::endl;
     }
 

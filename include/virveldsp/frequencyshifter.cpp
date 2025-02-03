@@ -5,6 +5,7 @@ http://yehar.com/blog/?p=368
  */
 
 #include <cmath>
+#include <cstdint>
 #include "frequencyshifter.h"
 
 using namespace daisysp;
@@ -51,8 +52,8 @@ void FrequencyShifter::process(float *buf, float *bufUp, size_t size) {
   delayed_i = tmp;
 
   for (size_t i = 0; i < size; ++i) {
-    buf[i] = cos(ph) * buf[i];
-    q[i] = sin(ph) * q[i];
+    buf[i] = std::cos(ph) * buf[i];
+    q[i] = std::sin(ph) * q[i];
     ph = fmodf(ph + inc, 2 * M_PI);
     buf[i] = buf[i] - q[i];
     bufUp[i] = buf[i] + q[i];

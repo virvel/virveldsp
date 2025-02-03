@@ -39,7 +39,7 @@ class delay2 {
             
             m_buffer[m_writePtr++] = in;
 
-            const uint32_t int_pos = static_cast<uint32_t>(floorf(m_readPtr));
+            const uint32_t int_pos = static_cast<uint32_t>(std::floor(m_readPtr));
             const float frac = m_readPtr - static_cast<float>(int_pos);
 
             auto n = int_pos;

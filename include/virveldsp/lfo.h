@@ -1,14 +1,12 @@
 #pragma once
 #include <cmath>
-constexpr float twopi = 6.2831853072f;
 
 namespace dsp {
 
 class lfo {
 
 public:
-  lfo() = default;
-
+  static constexpr float twopi = 6.2831853072f;
   void init(const float sampleRate) {
     m_sampleRate = sampleRate;
     m_freq = 1.f;
@@ -27,27 +25,27 @@ public:
     reset();
   }
 
-  inline void process() {
+  void process() {
     m_x = m_x - m_e * m_y;
     m_y = m_e * m_x + m_y;
   }
 
-  inline float processCosine() {
+  float processCosine() {
     process();
     return m_x;
   }
 
-  inline float processSine() {
+  float processSine() {
     process();
     return m_y;
   }
 
 private:
-  float m_freq;
-  float m_sampleRate;
-  float m_omega;
-  float m_x;
-  float m_y;
-  float m_e;
+  float m_freq = 0.f;
+  float m_sampleRate = 0.f;
+  float m_omega = 0.f;
+  float m_x = 0.f;
+  float m_y = 0.f;
+  float m_e = 0.f;
 };
 } // namespace dsp

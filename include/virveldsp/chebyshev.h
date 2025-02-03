@@ -2,62 +2,50 @@
 
 #include <array>
 #include <algorithm>
+#include <cmath>
 
 namespace dsp {
             
-    template <int num_harmonics>
-    class Chebyshev {
-       
-        public:
-            void init();
-            float process(float in);
-            void setAmplitude(const int n, const float w);
-            const float * getAmplitudes() const;
-            float * getAmplitudes();
-        private:
-        
-            std::array<float,num_harmonics> amplitudes;
-    };
+template <int numHarmonics>
+class Chebyshev {
 
-    template <int num_harmonics>
-    void Chebyshev<num_harmonics>::init() {
-        std::fill(amplitudes.begin(), amplitudes.end(), 1.f); 
+public:
+    void init() {
+        std::fill(amplitudes.begin(), amplitudes.end(), 1.f);
     }
 
-    template <int num_harmonics>
-    const float * Chebyshev<num_harmonics>::getAmplitudes() const {
-            return amplitudes.data(); 
-    }
+    float process(float in) {
+        in = std::fmin(std::fmax(-1.f, in), 1.f);
 
-    template <int num_harmonics>
-    float * Chebyshev<num_harmonics>::getAmplitudes() {
-            return amplitudes.data(); 
-    }
-
-    template <int num_harmonics>
-    float Chebyshev<num_harmonics>::process(float in) {
-        in = fmin(fmax(-1.f, in), 1.f);
-  
         float prev = in;
         float curr = 2.f * in * in - 1.f;
 
         float tmp = 0.f;
         float sum = amplitudes[0]*prev + amplitudes[1]*curr;
 
-        for (int i = 2; i < num_harmonics; ++i) {
+        for (int i = 2; i < numHarmonics; ++i) {
             tmp = curr;
-            curr = 2.f*in*curr - prev; 
+            curr = 2.f*in*curr - prev;
             prev = tmp;
 
             sum += amplitudes[i] * curr;
          }
 
-        return sum/num_harmonics; 
+        return sum/numHarmonics;
     }
 
-    template <int num_harmonics>
-    void Chebyshev<num_harmonics>::setAmplitude(const int n, const float w) {
+    void setAmplitude(const int n, const float w) {
         amplitudes[n] = w;
     }
 
+    const auto& getAmplitudes() const {
+            return &amplitudes;
+    }
+
+    auto& getAmplitudes() {
+            return &amplitudes;
+    }
+private:
+    std::array<float, numHarmonics> amplitudes;
+};
 } /* namespace daisysp */
