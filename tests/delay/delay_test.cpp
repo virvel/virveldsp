@@ -2,12 +2,12 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <virveldsp/delay.h>
+#include <numeric>
 
 TEST(DelayTest, BasicAssertions) {
-    std::vector<float> x(20, 0.f);
-    x[0] = 1.f;
-    x[1] = -0.5f;
-    std::vector<float> y(20, 0.f);
+    std::vector<float> x(100, 0.f);
+  std::iota(x.begin(), x.end(), 1.f);
+    std::vector<float> y(100, 0.f);
 
     dsp::delay<10> dd;
 
@@ -16,8 +16,7 @@ TEST(DelayTest, BasicAssertions) {
         y[i] = dd.read(5);
     }
 
-    std::vector<float> expected(20, 0.f);
-    expected[4] = 1.f;
-    expected[5] = -0.5f;
+    std::vector<float> expected(100, 0.f);
+    std::iota(expected.begin()+4, expected.end(), 1.f);
     EXPECT_THAT(y, testing::Pointwise(testing::FloatNear(1e-5),expected));
 }

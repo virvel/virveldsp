@@ -1,6 +1,7 @@
 #include "granulator.h"
+#include <cmath>
 
-void dsp::Grain::init(float *const buffer, const uint32_t size) {
+void dsp::Grain::init(float* const buffer, const uint32_t size) {
   m_buf = buffer;
   m_active = false;
   m_position = 0;
@@ -28,7 +29,7 @@ float dsp::Grain::play() {
     const float frac = m_position - int_pos;
 
     auto c = float(int_pos % m_duration) / float(m_duration);
-    c = sinf(M_PI * c);
+    c = std::sin(M_PI * c);
 
     if (m_position <= 1)
       return c * m_buf[1];
@@ -77,58 +78,58 @@ void dsp::Grain::setDuration(const float s) {
   }
 }
 
-void dsp::Granulator::init(float *const buffer, const uint32_t numSamples) {
+void dsp::Granulator::init(float* const buffer, const uint32_t numSamples) {
   m_numSamples = numSamples / 2;
   m_buffer = buffer;
 
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.init(buffer, numSamples / 2);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.init(&buffer[numSamples / 2], numSamples / 2);
 }
 
 void dsp::Granulator::setOffset(const float offset) {
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.setOffset(offset);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.setOffset(offset);
 }
 
 void dsp::Granulator::setNumSamples(const uint32_t size) {
   m_numSamples = size;
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.setSize(size);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.setSize(size);
 }
 
 void dsp::Granulator::setDuration(const float s) {
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.setDuration(s);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.setDuration(s);
 }
 
 void dsp::Granulator::setRate(const float speed) {
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.setRate(speed);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.setRate(speed);
 }
 
 void dsp::Granulator::setJitter(const float jitter) {
-  for (auto &g : m_grainsLeft)
+  for (auto& g : m_grainsLeft)
     g.setJitter(jitter);
-  for (auto &g : m_grainsRight)
+  for (auto& g : m_grainsRight)
     g.setJitter(jitter);
 }
 
-void dsp::Granulator::play(float *outL, float *outR) {
+void dsp::Granulator::play(float* outL, float* outR) {
 
-  for (auto &g : m_grainsLeft) {
+  for (auto& g : m_grainsLeft) {
     *outL += g.play();
   }
-  for (auto &g : m_grainsRight) {
+  for (auto& g : m_grainsRight) {
     *outR += g.play();
   }
 }

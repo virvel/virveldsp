@@ -16,7 +16,7 @@ TEST(LFOTest, BasicAssertions) {
     }
 
     for (size_t i = 0; i < 10000*x.size(); i++) {
-      auto _ = lfo.processCosine();
+      lfo.processCosine();
     }
 
     for (size_t i = 0; i < y.size(); i++) {
