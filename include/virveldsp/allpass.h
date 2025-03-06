@@ -9,7 +9,7 @@ class allpass {
 public:
   void init() {
     m_delayTime = static_cast<float>(m_size);
-    for (auto &b : m_buf)
+    for (auto& b : m_buf)
       b = 0.f;
   }
 
@@ -23,7 +23,7 @@ public:
     const float aa = (1 - frac) / (1 + frac + 0.001f);
     const float ynl = m_buf[t % m_size];
     const float vm = in + aa * ynl;
-    const float out = - aa * vm + ynl;
+    const float out = -aa * vm + ynl;
 
     m_buf[m_pos] = vm;
 
@@ -34,7 +34,7 @@ public:
 
 private:
   uint16_t m_size = S;
-  float m_buf[S]{};
+  float m_buf[S];
   uint16_t m_pos = 0;
   float m_delayTime = S;
 };

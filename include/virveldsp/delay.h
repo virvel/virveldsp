@@ -36,7 +36,7 @@ public:
   }
 
 private:
-  float m_buffer[S]{};
+  float m_buffer[S];
   const int32_t m_maxSize = S;
   int32_t m_writePtr = 0;
   float m_prev = 0.f;

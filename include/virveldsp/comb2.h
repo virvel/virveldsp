@@ -49,7 +49,7 @@ namespace dsp {
 
     private:
         unsigned maxSize = S;
-        float buffer[S]{};
+        float buffer[S];
         float delay = static_cast<float>(S);
         unsigned ptr = 0;
         float m_delayTime = S;

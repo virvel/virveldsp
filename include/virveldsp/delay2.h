@@ -7,17 +7,7 @@ namespace dsp {
     
 template <uint16_t S>
 class delay2 {
-    private:
-        float m_buffer[S];
-        const uint32_t m_maxSize = S;
-        float m_readPtr;
-        uint16_t m_writePtr;
-        float m_delayTime;
-        float m_newDelayTime;
-        float m_prev;
-        float m_mod;
-
-    public: 
+    public:
         void init(const float initSize) {
             assert(initSize < S);
             for (uint32_t i = 0; i < m_maxSize; ++i)
@@ -53,6 +43,15 @@ class delay2 {
 
         }
 
+    private:
+        float m_buffer[S];
+        const uint32_t m_maxSize = S;
+        float m_readPtr;
+        uint16_t m_writePtr;
+        float m_delayTime;
+        float m_newDelayTime;
+        float m_prev;
+        float m_mod;
 };
 
 } /* namespace dsp */

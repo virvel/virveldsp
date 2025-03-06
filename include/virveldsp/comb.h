@@ -41,7 +41,7 @@ public:
 
 private:
   uint16_t m_size = S;
-  float m_buf[S]{};
+  float m_buf[S];
   uint16_t m_pos = 0;
   float m_delayTime = S;
   float m_ff = 0.f;

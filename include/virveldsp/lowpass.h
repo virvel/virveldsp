@@ -4,11 +4,6 @@
 namespace dsp {
 
 class lowpass {
-    private:
-        uint16_t m_sr;
-        float m_fac;
-        float m_newfac;
-        float m_prev;
 
     public:
         void init(const uint16_t samplerate, const float fac ) {
@@ -34,8 +29,11 @@ class lowpass {
             update();
             m_prev = in - m_fac * m_prev;
             return m_prev;
-}
-
+            }
+    private:
+        uint16_t m_sr;
+        float m_fac;
+        float m_newfac;
+        float m_prev;
 };
-
 }
