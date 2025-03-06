@@ -14,9 +14,7 @@ FetchContent_MakeAvailable(googletest)
 
 add_compile_options(-Wall -Wextra -Wshadow)
 
-add_library(virveldsp STATIC
-        include/virveldsp/granulator.cpp
-)
+add_library(virveldsp INTERFACE)
 
 target_include_directories(virveldsp INTERFACE include)
 
