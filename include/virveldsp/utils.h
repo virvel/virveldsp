@@ -25,6 +25,22 @@ inline float tanh_(float x) {
   return x / std::sqrt(1.f + x * x);
 }
 
+inline float tanhy_(float x) {
+  x = clamp(x, -1.f, 1.f);
+  const float twox = x*x;
+  const float twoxx = twox*x;
+  const float fivex = twoxx*twox;
+  x += 0.16489087f * twoxx;
+  x += 0.00985468f * fivex;
+  float sqt = 1.f + x * x;
+#ifdef __arm__
+  asm("vsqrt.f32 %[d], %[n]" : [d] "=t"(sqt) : [n] "t"(sqt):);
+#else
+  sqr = std::sqrt(sqt);
+#endif
+  return x / sqt;
+}
+
 // log : [0,1] -> [0,1]
 inline float plog(const float in) {
   constexpr float recip = 1 / 3.f;
